@@ -1,0 +1,1 @@
+This intends to be an open-source translation bot that works in Discord using their API.
