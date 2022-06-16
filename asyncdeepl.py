@@ -8,7 +8,7 @@ async def get_usage(key):
         }
     async with aiohttp.ClientSession() as session:
         async with session.get(API_URL+'usage', params=data) as resp:
-            text = await resp.text()
+            text = await resp.json()
             return (resp.status, text)
 
 async def translate(key, lang, text):
@@ -19,5 +19,5 @@ async def translate(key, lang, text):
     }
     async with aiohttp.ClientSession() as session:
         async with session.get(API_URL+'translate', params=data) as resp:
-            text = await resp.text()
+            text = await resp.json()
             return (resp.status, text)
