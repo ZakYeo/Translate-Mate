@@ -24,18 +24,27 @@ async def translate(
     if language is None:
         language = "en-gb"
     status, text_translated = await deepl.translate(bot.auth_key, language, text_original)
-    embed = Embed(title="{} to {}".format(text_translated["translations"][0]["detected_source_language"],language)
-                  ,description="", color=Color.green())
-    embed.add_field(name="Original Text", value=text_original)
-    embed.add_field(name="Translated Text", value=text_translated["translations"][0]["text"])
+
+    if status == 200:
+        embed = Embed(title="{} to {}".format(text_translated["translations"][0]["detected_source_language"],language)
+                    ,description="", color=Color.green())
+        embed.add_field(name="Original Text", value=text_original)
+        embed.add_field(name="Translated Text", value=text_translated["translations"][0]["text"])
+    else:
+        embed = Embed(title="Error {}".format(status), description=text_translated["message"],
+        color=Color.red())
     await ctx.respond(embed=embed)
 
 @bot.slash_command(name="usage", description="Check usage remaining!")
 async def usage(ctx):
     status, text = await deepl.get_usage(bot.auth_key)
-    embed = Embed(title="DeepL's API Usage Statistics",description="", color=Color.green())
-    embed.add_field(name="Character Count", value=text["character_count"])
-    embed.add_field(name="Character Limit", value=text["character_limit"])
+    if status == 200:
+        embed = Embed(title="DeepL's API Usage Statistics",description="", color=Color.green())
+        embed.add_field(name="Character Count", value=text["character_count"])
+        embed.add_field(name="Character Limit", value=text["character_limit"])
+    else:
+        embed = Embed(title="Error {}".format(status), description=text["message"],
+        color=Color.red())
 
     await ctx.respond(embed=embed)
     
