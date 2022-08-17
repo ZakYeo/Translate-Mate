@@ -4,6 +4,7 @@ bot = commands.Bot(command_prefix='.')
 bot.auth_key = "" # Insert your DeepL auth key here
 token = "" # Insert your Discord bot key here
 
+
 @bot.event
 async def on_ready():
     """This function is run when the bot is first run and logged in."""
@@ -15,7 +16,9 @@ async def on_ready():
     
 if __name__ == "__main__":
     from os import listdir
-
+    import warnings
+    warnings.filterwarnings("ignore", category=UserWarning) 
+    
     # Load any cogs in the cog directory
     print("Loading Cogs Please Wait...")
     for cog in listdir("cogs"):
