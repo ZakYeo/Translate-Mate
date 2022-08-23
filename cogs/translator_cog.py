@@ -14,7 +14,7 @@ from os import remove
 latin_reader = easyocr.Reader(["no","pl","ro","rs_latin","sq","sv","it","is","hr","az","bs","cs","cy","et", "hr",
 "hu", "id", "lt", "lv", "mi", "nl", "pl", "pt", "sk", "sl", "sq", "tr"], verbose=False, gpu=True) # this needs to run only once to load the model into memory
 warnings.filterwarnings("ignore", category=UserWarning) 
-       
+
 
 class Translator(commands.Cog):
     """
@@ -30,30 +30,34 @@ class Translator(commands.Cog):
             'pl': 'Polish', 'pt': 'Portuguese', 'ro': 'Romanian', 'ru': 'Russian', 'sk': 'Slovak', 'sl': 'Slovenian', 'so': 'Somali', 'sq': 'Albanian', 'sv': 'Swedish',
             'sw': 'Swahili', 'ta': 'Tamil', 'te': 'Telugu', 'th': 'Thai', 'tl': 'Tagalog', 'tr': 'Turkish', 'uk': 'Ukranian', 'ur': 'Urdu', 'vi': 'Vietnamese',
             'zh-cn': 'Chinese (Simplified)', 'zh-tw': 'Chinese (Traditional)'} 
+        self.TRANSLATABLE_LANGS = {'Bulgarian': 'BG', 'Czech': 'CS', 'Danish': 'DA', 'German': 'DE', 'Greek': 'EL', 'English (British)': 'EN-GB', 'English': 'EN-US', 'English': "EN", 'Spanish':'ES',
+            'Estonian': 'ET', 'Finnish': 'FI', 'French': 'FR', 'Hungarian': 'HU', 'Indonesian': 'ID', 'Italian': 'IT', 'Japanese': 'JA', 'Lithuanian': 'LT', 'Latvian': 'LV', 'Dutch': 'NL',
+            'Polish': 'PL', 'Portuguese (Brazilian)': 'PTBR', 'Romanian': 'RO', 'Russian': 'RU', 'Slovak': 'SK',
+            'Slovenian': 'SL', 'Swedish': 'SV', 'Turkish': 'TR', 'Chinese': 'ZH',}
+        self.SWAPPED_TRANS_LANGS = dict([(value, key) for key, value in self.TRANSLATABLE_LANGS.items()])
         self.img_handler = ImageHandler()
     
     @discord.slash_command(name="translate", description="Translate text!")
     async def translate_command(self,
         ctx,
         text_original: Option(str, "Enter the text you wish to translate", required=True),
-        language: Option(str, "Select The Language To Translate To (Blank for English-GB)",choices=["en-gb","de","fr"], required=False)
+        language: Option(str, "Select The Language To Translate To (Blank for English-GB)",
+        choices=['Bulgarian', 'Czech', 'Danish', 'German', 'Greek', 'English', 
+        'Spanish', 'Estonian', 'Finnish', 'French', 'Hungarian', 'Indonesian', 'Italian', 'Japanese',
+        'Lithuanian', 'Dutch', 'Polish','Romanian', 'Russian', 'Slovak',
+        'Slovenian', 'Swedish', 'Turkish', 'Chinese'], 
+        required=False)
     ):
         """
         Translation Slash Command
         Takes some string of characters, and will translate said string into the desired language
         """
+        if(language is not None):
+            choice = self.TRANSLATABLE_LANGS[language]
+        else:
+            choice = "EN-US" # Default choice
 
-        status, text_translated = await deepl.translate(self.bot.auth_key, language, text_original)
-
-        if status == 200: # 200 = OK
-            embed = Embed(title="{} to {}".format(text_translated["translations"][0]["detected_source_language"],language)
-                        ,description="", color=Color.green())
-            embed.add_field(name="Original Text", value=text_original)
-            embed.add_field(name="Translated Text", value=text_translated["translations"][0]["text"])
-        else: # Non-200 Response Handling
-            embed = Embed(title="Error {}".format(status), description=text_translated["message"],
-            color=Color.red())
-        await ctx.respond(embed=embed, ephemeral=True)
+        await ctx.respond(embed=await self.handle_translation(choice, text_original), ephemeral=True)
 
     @discord.slash_command(name="usage", description="Check usage remaining!")
     async def usage(self, ctx):
@@ -105,6 +109,20 @@ class Translator(commands.Cog):
         text = await self.img_handler.message_images_to_text(message)
         await ctx.respond(embed=await self.img_handler.create_embed(text), ephemeral=True, view=DropdownView(self.bot,1,message))  
 
+    async def handle_translation(self, choice, text_original):
+        """Handle translation of text and returns an embed"""
+        status, text_translated = await deepl.translate(self.bot.auth_key, choice, text_original)
+        
+        if status == 200: # 200 = OK
+            embed = Embed(title="{} to {}".format(self.SWAPPED_TRANS_LANGS[text_translated["translations"][0]["detected_source_language"]],self.SWAPPED_TRANS_LANGS[choice])
+                        ,description="", color=Color.green())
+            embed.add_field(name="Original Text", value=text_original)
+            embed.add_field(name="Translated Text", value=text_translated["translations"][0]["text"])
+        else: # Non-200 Response Handling
+            embed = Embed(title="Error {}".format(status), description=text_translated["message"],
+            color=Color.red())
+        
+        return embed
 
 class Dropdown(discord.ui.Select):
     """
@@ -172,6 +190,7 @@ class DropdownView(discord.ui.View):
 
         # Adds the dropdown to our View object
         self.add_item(Dropdown(self.bot, self.page, self.original_msg))
+
 
 class ImageHandler():
 
