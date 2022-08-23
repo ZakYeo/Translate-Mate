@@ -1,4 +1,4 @@
-Open-source translation chat-bot that works in Discord using their API. (See https://discord.com/developers/docs/intro)
+Translation chat-bot that works in Discord using their API. (See https://discord.com/developers/docs/intro)
 
 I am using Pycord, which gives me functionality of slash commands and a lot more (See https://pycord.dev/)
 
