@@ -1,8 +1,8 @@
 from discord.ext import commands
 
-bot = commands.Bot(command_prefix='.')
-bot.auth_key = "" # Insert your DeepL auth key here
-token = "" # Insert your Discord bot key here
+bot = commands.Bot(command_prefix='.', debug_guilds=[985963144335736902])
+bot.auth_key = "ed656863-f2ce-4b89-b8be-0b55a9f10ff0:fx" # Insert your DeepL auth key here
+token = "OTIwNjgyMjczNzAyMDM1NDY2.Ybn6Lw.6ZoAL1TCX30XCnDWqpiqtyQc1pU" # Insert your Discord bot key here
 
 
 @bot.event
