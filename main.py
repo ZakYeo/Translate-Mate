@@ -22,9 +22,7 @@ if __name__ == "__main__":
     # Load any cogs in the cog directory
     print("Loading Cogs Please Wait...")
     for cog in listdir("cogs"):
-        if(cog == "__pycache__"):
-            pass
-        else:
+        if(cog.endswith(".py")):
             bot.load_extension("cogs."+cog[:-3]) # :-3 to remove file extension (.py)
 
     print("Cogs Loaded, success!")
