@@ -30,7 +30,7 @@ class Translator(commands.Cog):
             'pl': 'Polish', 'pt': 'Portuguese', 'ro': 'Romanian', 'ru': 'Russian', 'sk': 'Slovak', 'sl': 'Slovenian', 'so': 'Somali', 'sq': 'Albanian', 'sv': 'Swedish',
             'sw': 'Swahili', 'ta': 'Tamil', 'te': 'Telugu', 'th': 'Thai', 'tl': 'Tagalog', 'tr': 'Turkish', 'uk': 'Ukranian', 'ur': 'Urdu', 'vi': 'Vietnamese',
             'zh-cn': 'Chinese (Simplified)', 'zh-tw': 'Chinese (Traditional)'} 
-        self.TRANSLATABLE_LANGS = {'Bulgarian': 'BG', 'Czech': 'CS', 'Danish': 'DA', 'German': 'DE', 'Greek': 'EL', 'English (British)': 'EN-GB', 'English': 'EN-US', 'English': "EN", 'Spanish':'ES',
+        self.TRANSLATABLE_LANGS = {'Bulgarian': 'BG', 'Czech': 'CS', 'Danish': 'DA', 'German': 'DE', 'Greek': 'EL', 'English (British)': 'EN-GB', 'English': 'EN-US', 'Spanish':'ES',
             'Estonian': 'ET', 'Finnish': 'FI', 'French': 'FR', 'Hungarian': 'HU', 'Indonesian': 'ID', 'Italian': 'IT', 'Japanese': 'JA', 'Lithuanian': 'LT', 'Latvian': 'LV', 'Dutch': 'NL',
             'Polish': 'PL', 'Portuguese (Brazilian)': 'PTBR', 'Romanian': 'RO', 'Russian': 'RU', 'Slovak': 'SK',
             'Slovenian': 'SL', 'Swedish': 'SV', 'Turkish': 'TR', 'Chinese': 'ZH',}
@@ -121,6 +121,7 @@ class Translator(commands.Cog):
         else: # Non-200 Response Handling
             embed = Embed(title="Error {}".format(status), description=text_translated["message"],
             color=Color.red())
+    
         
         return embed
 
